@@ -1,0 +1,236 @@
+RELATORIO SIMPLIFICADO: DO APP ATUAL AO C#
+Versao analisada: 1.0.1
+
+OBJETIVO
+
+Este aplicativo foi escrito como PWA: HTML cria a tela, CSS cuida do visual
+e JavaScript implementa comportamento. O relatorio explica os componentes e
+mostra como organizar ideias equivalentes em C#, especialmente para um app
+Android com .NET MAUI. Os exemplos C# sao didaticos; nao sao uma conversao
+automatica nem arquivos que o app atual precisa para funcionar.
+
+1. TELA E FORMULARIO
+
+No projeto atual:
+Site-exemplo/index.html, linhas 35-87: formulario, campos obrigatorios e
+opcionais, botoes e selecao de anexos.
+
+Exemplo atual:
+  <input name="client" type="text" required maxlength="120">
+  <input name="date" type="text" required>
+
+O atributo required faz uma validacao inicial no navegador. A logica de
+salvamento tambem valida os valores; nao se deve confiar somente na tela.
+
+Em C# com .NET MAUI, a interface normalmente seria feita em XAML. O formulario
+seria ligado a um ViewModel e ao modelo de dados, em vez de buscar elementos
+HTML pelo nome.
+
+2. MODELO DE DADOS
+
+No app atual, o objeto OS e montado no envio do formulario em app.js, linhas
+432-469. Ele guarda cliente, data, horarios, descricao, comentarios e anexos.
+crypto.randomUUID() cria um identificador unico.
+
+Uma representacao inicial em C# poderia ser:
+
+  using System.ComponentModel.DataAnnotations;
+
+  public sealed class OrdemServico
+  {
+      public Guid Id { get; set; } = Guid.NewGuid();
+
+      [Required, StringLength(120)]
+      public string Cliente { get; set; } = "";
+
+      [Required]
+      public DateOnly? Data { get; set; }
+
+      [Required]
+      public TimeOnly? HoraChegada { get; set; }
+
+      [Required, StringLength(2000)]
+      public string Problema { get; set; } = "";
+
+      [Required, StringLength(2000)]
+      public string TrabalhoAplicado { get; set; } = "";
+
+      [Required, StringLength(2000)]
+      public string Resultado { get; set; } = "";
+
+      [Required]
+      public TimeOnly? HoraSaida { get; set; }
+
+      [StringLength(2000)]
+      public string Comentarios { get; set; } = "";
+  }
+
+As anotacoes [Required] e [StringLength] deixam as regras junto dos dados.
+DateOnly e TimeOnly representam data e hora sem confundir esses valores com
+um instante completo. Guid.NewGuid() e o equivalente apropriado de UUID.
+Para anexos, crie uma classe AnexoOs com nome, tipo e caminho/localizacao;
+evite guardar videos grandes todos em memoria.
+
+3. VALIDACAO E FORMATACAO
+
+No app.js, linhas 70-89, parseServiceDate e parseServiceTime rejeitam datas
+impossiveis e horarios fora do padrao 24 horas. As linhas 91-152 inserem
+barras e dois-pontos enquanto o usuario digita.
+
+Em C#, valide e formate com tipos de data, nao apenas com expressoes regulares:
+
+  using System.Globalization;
+
+  bool dataValida = DateOnly.TryParseExact(
+      textoData, "dd/MM/yyyy", CultureInfo.InvariantCulture,
+      DateTimeStyles.None, out DateOnly data);
+
+  bool horaValida = TimeOnly.TryParseExact(
+      textoHora, "HH:mm", CultureInfo.InvariantCulture,
+      DateTimeStyles.None, out TimeOnly hora);
+
+  string dataNaTela = data.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+TryParseExact retorna false para entrada invalida sem lancar excecao. A mascara
+visual pertence a interface/ViewModel; a regra de calendario deve continuar
+no modelo ou servico para tambem proteger dados importados e testes.
+
+4. SALVAMENTO LOCAL E RESPONSABILIDADES
+
+No app.js, linhas 22-56, IndexedDB abre o armazenamento e implementa listar,
+salvar e excluir. As operacoes sao assincronas para nao bloquear a tela.
+
+Em C#, uma interface separa o que o app precisa fazer de como os dados ficam
+armazenados:
+
+  public interface IOrdemServicoRepository
+  {
+      Task<IReadOnlyList<OrdemServico>> ListarAsync(
+          CancellationToken cancellationToken = default);
+      Task SalvarAsync(
+          OrdemServico ordem,
+          CancellationToken cancellationToken = default);
+      Task ExcluirAsync(
+          Guid id,
+          CancellationToken cancellationToken = default);
+  }
+
+Uma implementacao concreta poderia usar SQLite local. A tela chama um
+servico; o servico usa o repositorio. Essa separacao permite trocar SQLite,
+testar o servico sem banco real e manter a interface independente do
+armazenamento. Em MAUI, async/await e Task cumprem papel semelhante as
+Promises e async/await do JavaScript.
+
+5. ENVIO DO FORMULARIO E TRATAMENTO DE ERROS
+
+No app.js, linhas 432-474, o evento submit impede o recarregamento, valida,
+monta a OS, salva, atualiza a tela e mostra erros. O bloco finally reativa o
+botao mesmo quando ocorre uma falha.
+
+Em uma pagina Blazor, a ideia pode ser expressa assim:
+
+  private async Task SalvarAsync()
+  {
+      IsBusy = true;
+      try
+      {
+          await servico.SalvarAsync(Ordem);
+          Mensagem = "Ordem salva.";
+      }
+      catch (ValidationException ex)
+      {
+          Mensagem = ex.Message;
+      }
+      finally
+      {
+          IsBusy = false;
+      }
+  }
+
+Em .NET MAUI, o mesmo metodo pode ser chamado pelo comando SalvarCommand do
+ViewModel. Evite colocar consultas ao banco, regras de negocio e criacao de
+tela dentro do mesmo metodo.
+
+6. HISTORICO E SEGURANCA DA INTERFACE
+
+renderOrders em app.js, linhas 169-203, transforma ordens em cartoes e estados
+visuais. escapeHtml, linhas 156-159, evita interpretar texto digitado como
+marcacao HTML ao construir a lista.
+
+Em C#, use uma lista ligada a uma propriedade observavel do ViewModel
+(CollectionView no MAUI, ou componente de lista no Blazor). No Razor, prefira
+interpolacao normal, que codifica texto automaticamente. Evite renderizar
+HTML digitado pelo usuario como conteudo bruto.
+
+Uma melhoria para o futuro e manter renderizacao em uma classe de interface,
+regras em um servico e persistencia em um repositorio.
+
+7. EXPORTACAO TXT E ZIP
+
+orderText, downloadBlob e exportHistory ficam em app.js, linhas 205-229 e
+328-352. createZip, linhas 260-312, escreve manualmente a estrutura ZIP para
+o navegador. Isso e codigo de baixo nivel e exige cuidado com o formato.
+
+Em C#, use as bibliotecas prontas do .NET:
+
+  using System.IO.Compression;
+
+  await File.WriteAllTextAsync(caminhoTxt, conteudo);
+
+  using var arquivo = File.Create(caminhoZip);
+  using var zip = new ZipArchive(arquivo, ZipArchiveMode.Create);
+  var entrada = zip.CreateEntry("ordem.txt");
+  await using var destino = entrada.Open();
+  await using var origem = File.OpenRead(caminhoTxt);
+  await origem.CopyToAsync(destino);
+
+No telefone, escolha um destino apropriado para exportacao usando a API de
+selecao/compartilhamento de arquivos do MAUI, em vez de assumir uma pasta
+publica fixa.
+
+8. SINCRONIZACAO COM GOOGLE TASKS
+
+connectGoogle, syncOrder e syncPendingOrders ficam em app.js, linhas 354-429.
+O app solicita autorizacao OAuth, envia uma requisicao HTTP e guarda o estado
+da sincronizacao. Sem a configuracao OAuth, o salvamento local continua
+disponivel. Fotos e videos nao sao enviados ao Google Tasks.
+
+Em C#, mantenha essa integracao em um servico, por exemplo
+IGoogleTasksService, e faca requisicoes com HttpClient. Use uma biblioteca de
+autenticacao adequada a plataforma e armazenamento seguro de tokens; nao
+grave token OAuth em texto aberto, nem coloque um segredo privado dentro do
+aplicativo. Trate erros HTTP e apresente o resultado ao usuario.
+
+9. VISUAL, INSTALACAO E MODO OFFLINE
+
+Site-exemplo/styles.css define cores, espacamento e adaptacao para celular.
+site-exemplo/manifest.json informa nome e comportamento instalavel. sw.js
+faz cache para o PWA funcionar offline depois do primeiro acesso.
+
+Em .NET MAUI, o visual passa para XAML e recursos/estilos da aplicacao. O
+manifesto e service worker pertencem ao PWA e nao sao a forma de empacotar um
+app MAUI nativo. O projeto Android MAUI gera o pacote Android e configura
+permissoes, icones e assinatura.
+
+10. O QUE LEVAR PARA SEU PROXIMO PROJETO C#
+
+- Dê um tipo claro a cada dado: Guid, string, DateOnly e TimeOnly.
+- Separe modelo, interface, servico e repositorio.
+- Use async/await para banco e rede; mostre falhas em vez de ignora-las.
+- Valide tanto na interface quanto na camada de negocio.
+- Reutilize bibliotecas conhecidas (SQLite, ZipArchive, HttpClient).
+- Escreva metodos pequenos com um objetivo evidente.
+- Guarde dados e tokens de forma apropriada; exporte backups.
+- Crie testes para regras importantes, como datas, horarios e exportacao.
+
+MAPA RAPIDO DOS ARQUIVOS
+
+Site-exemplo/index.html  Estrutura da tela e campos do formulario.
+Site-exemplo/styles.css  Cores, espacamento e layout adaptavel.
+Site-exemplo/app.js      Validacao, mascara, dados, exportacao e integracao.
+Site-exemplo/manifest.json Nome e opcoes de instalacao PWA.
+Site-exemplo/sw.js       Cache e atendimento offline do PWA.
+
+Importante: o codigo atual e JavaScript para navegador, nao C#. Os trechos
+C# sao um ponto de partida para aprender a arquitetura equivalente, nao uma
+promessa de que todas as APIs MAUI ja estejam configuradas neste repositorio.

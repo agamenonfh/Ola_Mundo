@@ -1,0 +1,31 @@
+ARQUIVOS DO PROJETO PARA UPLOAD AO GITHUB
+
+APLICATIVO EXECUTAVEL (FONTE PRINCIPAL)
+
+Site-exemplo/index.html   Formulario e telas do aplicativo.
+Site-exemplo/app.js       Mascara automatica, validacao, armazenamento local,
+                          exportacao TXT/ZIP e sincronizacao Google Tasks.
+Site-exemplo/styles.css   Layout responsivo e estilos.
+Site-exemplo/manifest.json Configuracao do PWA para instalacao no Android.
+Site-exemplo/sw.js        Cache do app para uso offline; versao atual v4.
+Site-exemplo/icon.svg     Icone do aplicativo.
+
+DOCUMENTACAO E EVIDENCIAS POR VERSAO
+
+versoes/README.txt                         Como manter novas versoes.
+versoes/v1.0.1/LEIA-ME.txt                 Como publicar a versao.
+versoes/v1.0.1/ALTERACOES.txt              Mudancas da versao 1.0.1.
+versoes/v1.0.1/TESTES.txt                 Resultados dos testes.
+versoes/v1.0.1/RELATORIO-C-SHARP.txt       Guia didatico dos componentes e C#.
+versoes/v1.0.1/screenshots/COMENTARIOS.txt Anotacoes da captura.
+versoes/v1.0.1/screenshots/01-formulario-anotado.png Captura visual anotada.
+
+ENVIO PARA O GITHUB
+
+Envie Site-exemplo/, versoes/ e README.md. Se usar git no terminal:
+
+  git add README.md Site-exemplo versoes
+  git commit -m "Documenta versao 1.0.1 do app de OS"
+  git push
+
+Nao envie dados reais de clientes ou anexos de ordens ao repositorio.

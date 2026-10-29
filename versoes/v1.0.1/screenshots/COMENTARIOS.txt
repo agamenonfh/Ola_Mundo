@@ -1,0 +1,14 @@
+COMENTARIOS DAS CAPTURAS - VERSAO 1.0.1
+
+01-formulario-anotado.png
+Captura anotada do formulario em viewport de celular.
+
+1. Data: ao digitar oito numeros, as barras surgem automaticamente no
+   formato dd/MM/yyyy.
+2. Chegada e saida: os dois-pontos surgem automaticamente no formato HH:mm
+   de 24 horas.
+3. Os demais campos obrigatorios e os campos opcionais continuam disponiveis.
+4. O historico oferece exportacao individual e completa.
+
+Os dados exibidos na captura sao exemplos ficticios, usados somente para
+demonstrar os separadores automaticos.

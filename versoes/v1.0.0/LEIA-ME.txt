@@ -1,0 +1,40 @@
+REGISTRO DE VERSAO - 1.0.0
+
+ONDE ESTA O APLICATIVO EXECUTAVEL
+
+O codigo desta versao esta na pasta Site-exemplo/ na raiz do repositorio.
+Esta pasta de versao guarda o relatorio, as anotacoes e as capturas.
+O diretorio app/ foi removido para nao confundir o usuario: ele nao era uma
+copia executavel independente.
+
+PUBLICAR NO GITHUB
+
+1. Envie as pastas Site-exemplo/ e versoes/ para o seu repositorio GitHub.
+2. No repositorio, abra Settings > Pages.
+3. Configure GitHub Pages para publicar a raiz da branch. Assim, o app fica
+   disponivel no endereco /Site-exemplo/ e os relatorios em /versoes/.
+4. Publique em HTTPS. HTTPS e necessario para instalacao PWA e modo offline.
+5. Abra /Site-exemplo/ no Chrome do Android e selecione Adicionar a tela inicial.
+
+ARQUIVOS NECESSARIOS PARA FUNCIONAR
+
+Site-exemplo/index.html       Tela e formulario da OS.
+Site-exemplo/app.js           Salvamento local, validacao, exportacao e Google Tasks.
+Site-exemplo/styles.css       Aparencia responsiva.
+Site-exemplo/manifest.json    Configuracao para instalacao como PWA.
+Site-exemplo/sw.js            Cache do aplicativo para uso offline.
+Site-exemplo/icon.svg         Icone do aplicativo.
+
+GOOGLE TASKS (OPCIONAL)
+
+Sem configuracao, o app salva no aparelho e exporta TXT/ZIP. Para ativar
+Google Tasks, crie um cliente OAuth Web no Google Cloud, habilite Google
+Tasks API, autorize a origem HTTPS e configure GOOGLE_CLIENT_ID no app.js.
+Nao publique segredos OAuth. Fotos e videos permanecem no aparelho e sao
+incluidos no ZIP, mas nao sao enviados ao Google Tasks.
+
+IMPORTANTE SOBRE DADOS
+
+Os registros ficam no armazenamento local do navegador. Limpar os dados do
+navegador ou perder o aparelho pode apagar as ordens; exporte backups com
+frequencia.

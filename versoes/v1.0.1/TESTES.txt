@@ -1,0 +1,21 @@
+RELATORIO DE TESTES - VERSAO 1.0.1
+Data: 27/10/2026
+
+TESTES DE MASCARA
+
+[OK] Digitar 27032026 mostrou 27/03/2026.
+[OK] Digitar 0915 mostrou 09:15.
+[OK] Digitar 1740 mostrou 17:40.
+[OK] Backspace junto a barra da data e Delete junto a barra/dois-pontos
+     removeram o digito vizinho; redigita-lo restaurou o valor correto.
+[OK] A data 31/02/2026 foi rejeitada ao salvar com mensagem explicita.
+[OK] A validacao programatica continuou rejeitando a hora 25:00.
+
+TESTES DE REGRESSAO
+
+[OK] Ordem de teste foi salva, exibida no historico e removida ao final.
+[OK] TXT de historico incluiu a data 05/03/2026 e a chegada 09:15.
+[OK] ZIP de historico abriu com a ordem esperada; conteudo TXT foi validado.
+[OK] Layout em viewport de celular de 430 px nao apresentou rolagem horizontal
+     (ver captura anotada).
+[OK] git diff --check terminou sem erros.

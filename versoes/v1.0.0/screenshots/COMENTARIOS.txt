@@ -1,0 +1,15 @@
+COMENTARIOS DAS CAPTURAS
+
+01-formulario-anotado.png
+Captura anotada do formulario em largura de celular.
+
+1. Cabecalho simples: identifica o aplicativo e mostra a acao de conexao
+   opcional com Google Tasks.
+2. Data da OS: campo aceita dd/MM/yyyy; o formato esta indicado ao usuario.
+3. Horarios: chegada e saida usam HH:mm em formato de 24 horas.
+4. Campos obrigatorios: cliente, data, chegada, problema/instalacao,
+   trabalho aplicado, resultado e hora de saida.
+5. Campos opcionais: comentarios e anexos de fotos/videos.
+6. Historico: lista das ordens salvas e atalhos para exportar TXT/ZIP.
+
+As anotacoes visuais sao explicacoes da interface; nao sao dados de cliente.

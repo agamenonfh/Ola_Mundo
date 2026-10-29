@@ -1,0 +1,16 @@
+VERSAO 1.0.0 - 27/10/2026
+
+PRIMEIRA VERSAO DOCUMENTADA E TESTADA
+
+- Aplicativo PWA responsivo, com interface em portugues.
+- Registro de cliente, data, chegada, problema, trabalho, resultado e saida.
+- Data validada e exibida como dd/MM/yyyy.
+- Horarios validados no formato de 24 horas HH:mm.
+- Comentarios e anexos de fotos/videos opcionais.
+- Persistencia local pelo IndexedDB e interface disponivel offline apos o
+  primeiro carregamento.
+- Exportacao de uma ordem em TXT e ZIP.
+- Exportacao do historico completo em TXT ou ZIP com anexos.
+- Conexao opcional com Google Tasks mediante configuracao OAuth do usuario.
+
+Os anexos ficam no dispositivo e nao sao enviados ao Google Tasks.

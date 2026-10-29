@@ -1,0 +1,26 @@
+RELATORIO DE TESTES - VERSAO 1.0.0
+Data: 27/10/2026
+
+RESULTADOS
+
+[OK] Pagina abriu no navegador pelo servidor HTTP local.
+[OK] Interface mostrou os sete campos obrigatorios e os campos opcionais.
+[OK] OS de teste foi salva localmente e apareceu no historico.
+[OK] Data digitada como 05/03/2026 foi exibida como 05/03/2026.
+[OK] Hora de chegada 09:05 e saida 17:30 foram aceitas em 24 horas.
+[OK] Data invalida 31/02/2026 foi rejeitada.
+[OK] Hora invalida 25:00 foi rejeitada.
+[OK] Comentarios e anexos permaneceram opcionais.
+[OK] ZIP de teste abriu com os arquivos esperados usando a biblioteca
+     padrao do Python; os bytes do anexo foram preservados.
+[OK] Layout em largura de celular (390 px) nao apresentou rolagem horizontal.
+[OK] Ordem de teste foi removida ao final da verificacao.
+[OK] git diff --check terminou sem erros.
+
+LIMITES DESTE TESTE
+
+- A sincronizacao com Google Tasks nao foi testada porque depende de um
+  cliente OAuth e uma conta Google fornecidos pelo proprietario da aplicacao.
+- O teste offline completo deve ser repetido depois de publicar a versao em
+  HTTPS e carregar o app uma primeira vez.
+- A instalacao em aparelho Android fisico deve ser validada no dispositivo.

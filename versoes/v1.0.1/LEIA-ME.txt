@@ -1,0 +1,17 @@
+REGISTRO DE VERSAO - 1.0.1
+
+Nesta versao, as barras da data e os dois-pontos dos horarios aparecem
+automaticamente durante a digitacao. Exemplo: digite 27032026 e o campo
+mostra 27/03/2026; digite 0915 e o campo mostra 09:15.
+
+ONDE ESTAO OS ARQUIVOS
+
+O aplicativo executavel esta em Site-exemplo/ na raiz do repositorio.
+Este diretorio versoes/v1.0.1/ contem os arquivos de documentacao e evidencias
+de teste para esta versao.
+
+Para fazer upload ao GitHub, envie Site-exemplo/ e versoes/ completas. Para
+GitHub Pages, publique a raiz da branch e abra /Site-exemplo/. Configure o
+cliente Google OAuth em Site-exemplo/app.js apenas se for usar Google Tasks.
+
+Arquivos: ALTERACOES.txt, TESTES.txt e screenshots/ com capturas anotadas.

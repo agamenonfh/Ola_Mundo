@@ -1,0 +1,14 @@
+VERSAO 1.0.1 - 27/10/2026
+
+Alteracao solicitada: os separadores devem aparecer automaticamente durante
+a digitacao dos campos de data e hora.
+
+- Data: digitos sao formatados como dd/MM/yyyy, com barras inseridas.
+- Horarios: digitos sao formatados como HH:mm, com dois-pontos inseridos.
+- Teclas Backspace e Delete junto aos separadores removem o digito vizinho,
+  evitando que o separador fique preso durante a edicao.
+- A validacao de data real e horario de 24 horas continua ativa.
+- O cache offline foi atualizado para v4 para distribuir o novo JavaScript
+  aos usuarios que ja haviam instalado uma versao anterior.
+
+Codigo executavel atualizado: Site-exemplo/app.js e Site-exemplo/sw.js.

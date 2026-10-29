@@ -1,13 +1,113 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu primeiro site em repositório</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#183b35">
+    <meta name="description" content="Registre ordens de serviço no local, mesmo sem internet.">
+    <title>Minhas ordens de serviço</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="app.js" defer></script>
 </head>
 <body>
-    <h1>Olá, Mundo!</h1>
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Non est reiciendis unde! Dolores molestiae sed id incidunt cupiditate dolorum culpa iste maxime aut magnam ea animi, eos tempora, non tempore!</p>
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Totam deserunt, minus voluptate, eum ad minima incidunt repellat dolore impedit hic nihil unde quos optio necessitatibus. Minima quidem rem molestiae aliquam.</p>
+    <header class="topbar">
+        <a class="brand" href="#" aria-label="Ordens de serviço">
+            <span class="brand-mark" aria-hidden="true">OS</span>
+            <span>Ordens de serviço</span>
+        </a>
+        <button id="connect-button" class="button button-outline" type="button">Conectar Google Tasks</button>
+    </header>
+
+    <main class="layout">
+        <section class="intro">
+            <p class="eyebrow">REGISTRO DE CAMPO</p>
+            <h1>Seu trabalho, bem documentado.</h1>
+            <p>Preencha a ordem no local. Seus registros ficam salvos neste aparelho, mesmo sem internet.</p>
+            <div id="sync-status" class="sync-status" role="status">
+                <span class="status-dot" aria-hidden="true"></span>
+                <span>Modo local — conecte o Google Tasks para sincronizar.</span>
+            </div>
+        </section>
+
+        <section class="panel form-panel" aria-labelledby="form-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">NOVA ORDEM</p>
+                    <h2 id="form-title">Dados do atendimento</h2>
+                </div>
+                <span class="required-note">* Obrigatório</span>
+            </div>
+
+            <form id="service-form">
+                <div class="form-grid">
+                    <label class="field field-wide">
+                        <span>Nome do cliente <b>*</b></span>
+                        <input name="client" type="text" autocomplete="name" required maxlength="120" placeholder="Nome completo ou empresa">
+                    </label>
+                    <label class="field">
+                        <span>Data da ordem <b>*</b></span>
+                        <input name="date" type="text" inputmode="numeric" autocomplete="off" placeholder="dd/MM/yyyy" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" aria-describedby="date-format" required>
+                        <small id="date-format" class="field-help">Formato: dd/MM/yyyy</small>
+                    </label>
+                    <label class="field">
+                        <span>Hora de chegada <b>*</b></span>
+                        <input name="arrival" type="text" inputmode="numeric" autocomplete="off" placeholder="HH:mm" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" required>
+                    </label>
+                    <label class="field field-wide">
+                        <span>Problema encontrado / instalação a ser executada <b>*</b></span>
+                        <textarea name="problem" rows="3" required maxlength="2000" placeholder="Descreva o pedido ou problema relatado"></textarea>
+                    </label>
+                    <label class="field field-wide">
+                        <span>Trabalho aplicado <b>*</b></span>
+                        <textarea name="work" rows="3" required maxlength="2000" placeholder="Descreva o serviço realizado"></textarea>
+                    </label>
+                    <label class="field field-wide">
+                        <span>Resultado <b>*</b></span>
+                        <textarea name="result" rows="2" required maxlength="2000" placeholder="Informe o resultado do atendimento"></textarea>
+                    </label>
+                    <label class="field">
+                        <span>Hora de saída <b>*</b></span>
+                        <input name="departure" type="text" inputmode="numeric" autocomplete="off" placeholder="HH:mm" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" required>
+                    </label>
+                    <label class="field field-wide">
+                        <span>Comentários <small>Opcional</small></span>
+                        <textarea name="comments" rows="2" maxlength="2000" placeholder="Observações adicionais"></textarea>
+                    </label>
+                    <label class="field field-wide">
+                        <span>Fotos e vídeos <small>Opcional</small></span>
+                        <input id="attachments" name="attachments" type="file" accept="image/*,video/*" multiple>
+                        <small class="field-help">Os arquivos ficam neste aparelho até você exportá-los em ZIP.</small>
+                    </label>
+                </div>
+                <p id="form-error" class="error-message" role="alert" hidden></p>
+                <button class="button button-primary submit-button" type="submit">Salvar ordem de serviço</button>
+            </form>
+        </section>
+
+        <section class="orders-section" aria-labelledby="orders-title">
+            <div class="section-heading orders-heading">
+                <div>
+                    <p class="eyebrow">HISTÓRICO</p>
+                    <h2 id="orders-title">Ordens registradas <span id="order-count" class="count">0</span></h2>
+                </div>
+                <div class="history-actions">
+                    <button id="export-history-txt" class="button button-outline" type="button" disabled>Baixar histórico TXT</button>
+                    <button id="export-history-zip" class="button button-outline" type="button" disabled>Baixar tudo ZIP</button>
+                </div>
+            </div>
+            <div id="orders-list" class="orders-list">
+                <div class="empty-state">
+                    <span class="empty-mark" aria-hidden="true">OS</span>
+                    <p>Nenhuma ordem por aqui ainda.</p>
+                    <small>Quando salvar um atendimento, ele aparecerá nesta lista.</small>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>Seus dados são armazenados neste aparelho. Exporte suas ordens regularmente para manter uma cópia segura.</footer>
 </body>
 </html>
